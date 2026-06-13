@@ -9,14 +9,19 @@ const CFG = {
   worldClock1Label: 'NEW YORK, USA',
   worldClock2Zone: 'Asia/Tokyo',
   worldClock2Label: 'TOKYO, JAPAN',
-  demoMode: true,
+  demoMode: false,
   showApiPanel: true,
   panelOpacity: .78,
   uiScale: 1,
-  clockScale: 1
+  clockScale: 1,
+  weatherLocationName: 'HAMBURG',
+  weatherLatitude: 53.5511,
+  weatherLongitude: 9.9937,
+  weatherUpdateMinutes: 10
 };
 
 const histories = { cpu: Array(60).fill(0), gpu: Array(60).fill(0) };
+const weatherState = { lastAt: 0, data: null, loading: false };
 const $ = (id) => document.getElementById(id);
 const clamp = (n, min=0, max=100) => Math.min(max, Math.max(min, Number.isFinite(+n) ? +n : 0));
 const gb = (v) => (Number.isFinite(+v) ? (+v).toFixed(1) : '--');
@@ -83,6 +88,80 @@ function tzOffsetLabel(tz){
   }catch{ return tz; }
 }
 
+function coordText(lat, lon){
+  const ns = lat >= 0 ? 'N' : 'S';
+  const ew = lon >= 0 ? 'E' : 'W';
+  return `${Math.abs(Number(lat)).toFixed(4)}° ${ns}, ${Math.abs(Number(lon)).toFixed(4)}° ${ew}`;
+}
+
+function weatherPresentation(code){
+  const map = {
+    0:['CLEAR SKY','☼',''],1:['MAINLY CLEAR','⛅',''],2:['PARTLY CLOUDY','☁︎',''],3:['OVERCAST','☁︎',''],
+    45:['FOG','〰',''],48:['RIME FOG','〰',''],51:['LIGHT DRIZZLE','☁︎','///'],53:['DRIZZLE','☁︎','///'],55:['DENSE DRIZZLE','☁︎','////'],
+    56:['FREEZING DRIZZLE','☁︎','///'],57:['HEAVY FREEZING DRIZZLE','☁︎','////'],61:['LIGHT RAIN','☁︎','///'],63:['RAIN','☁︎','////'],65:['HEAVY RAIN','☁︎','/////'],
+    66:['FREEZING RAIN','☁︎','///'],67:['HEAVY FREEZING RAIN','☁︎','////'],71:['LIGHT SNOW','❄','*'],73:['SNOW','❄','**'],75:['HEAVY SNOW','❄','***'],
+    77:['SNOW GRAINS','❄','*'],80:['RAIN SHOWERS','☁︎','///'],81:['HEAVY SHOWERS','☁︎','////'],82:['VIOLENT SHOWERS','☁︎','/////'],
+    85:['SNOW SHOWERS','❄','**'],86:['HEAVY SNOW SHOWERS','❄','***'],95:['THUNDERSTORM','⚡','///'],96:['THUNDER HAIL','⚡','///'],97:['HEAVY THUNDER HAIL','⚡','////']
+  };
+  return map[code] || ['WEATHER','☁︎',''];
+}
+
+async function fetchWeather(){
+  const now = Date.now();
+  const refreshMs = Math.max(1, Number(CFG.weatherUpdateMinutes) || 10) * 60 * 1000;
+  if (weatherState.loading) return weatherState.data;
+  if (weatherState.data && now - weatherState.lastAt < refreshMs) return weatherState.data;
+  weatherState.loading = true;
+  try{
+    const lat = Number(CFG.weatherLatitude), lon = Number(CFG.weatherLongitude);
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${encodeURIComponent(lat)}&longitude=${encodeURIComponent(lon)}&current=temperature_2m,relative_humidity_2m,pressure_msl,wind_speed_10m,weather_code&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1`;
+    const res = await fetch(url, {cache:'no-store'});
+    if(!res.ok) throw new Error(`Weather HTTP ${res.status}`);
+    const json = await res.json();
+    const current = json.current || {}, daily = json.daily || {};
+    weatherState.data = {
+      locationName: CFG.weatherLocationName,
+      latitude: lat,
+      longitude: lon,
+      temperature: current.temperature_2m,
+      humidity: current.relative_humidity_2m,
+      wind: current.wind_speed_10m,
+      pressure: current.pressure_msl,
+      weatherCode: current.weather_code,
+      tempMax: Array.isArray(daily.temperature_2m_max) ? daily.temperature_2m_max[0] : null,
+      tempMin: Array.isArray(daily.temperature_2m_min) ? daily.temperature_2m_min[0] : null
+    };
+    weatherState.lastAt = Date.now();
+    return weatherState.data;
+  }catch(err){
+    if(weatherState.data) return weatherState.data;
+    return {
+      locationName: CFG.weatherLocationName,
+      latitude: Number(CFG.weatherLatitude),
+      longitude: Number(CFG.weatherLongitude),
+      temperature: null, humidity: null, wind: null, pressure: null,
+      weatherCode: 3, tempMax: null, tempMin: null, error: err.message
+    };
+  }finally{ weatherState.loading = false; }
+}
+
+function updateWeatherUI(w){
+  if(!w) return;
+  const [label, icon, slashes] = weatherPresentation(w.weatherCode);
+  $('weather-condition').textContent = label;
+  $('weather-temp').textContent = Number.isFinite(+w.temperature) ? `${Math.round(w.temperature)}°C` : '--°C';
+  $('weather-range').textContent = `↟ ${Number.isFinite(+w.tempMax) ? Math.round(w.tempMax) : '--'}°C   ↡ ${Number.isFinite(+w.tempMin) ? Math.round(w.tempMin) : '--'}°C`;
+  $('city-title').textContent = (w.locationName || CFG.weatherLocationName || 'LOCATION').toUpperCase();
+  $('city-coords').textContent = coordText(Number(w.latitude), Number(w.longitude));
+  $('weather-humidity').textContent = `♢ ${Number.isFinite(+w.humidity) ? Math.round(w.humidity) : '--'}%`;
+  $('weather-wind').textContent = `≋ ${Number.isFinite(+w.wind) ? Math.round(w.wind) : '--'} km/h`;
+  $('weather-pressure').textContent = `◌ ${Number.isFinite(+w.pressure) ? Math.round(w.pressure) : '--'} hPa`;
+  $('weather-icon').childNodes[0].textContent = icon;
+  $('weather-slashes').textContent = slashes;
+}
+
+async function refreshWeather(){ updateWeatherUI(await fetchWeather()); }
+
 function updateClocks(){
   const now = new Date();
   $('local-label').textContent = CFG.localLabel;
@@ -129,21 +208,28 @@ function updateStats(s){
   buildSegments($('ram-bar'), ramPct); buildSegments($('vram-bar'), vramPct); buildSegments($('cpu-temp-bar'), clamp(cpu.temp,20,100), 25); buildSegments($('gpu-temp-bar'), clamp(gpu.temp,20,100), 25); buildSegments($('mb-temp-bar'), clamp(mb.temp,20,100), 25);
   drawLine($('cpu-chart'), histories.cpu); drawLine($('gpu-chart'), histories.gpu);
   $('api-source').textContent = s.source === 'local' ? 'LOCAL SENSOR BRIDGE' : 'DEMO / FALLBACK';
-  $('api-status').textContent = s.source === 'local' ? 'Sensores ativos em tempo real' : `Modo demo ativo${s.error ? ' • '+s.error : ''}`;
+  $('api-status').textContent = s.source === 'local' ? 'Sensores do PC em tempo real' : (CFG.demoMode ? `Modo demo ativo${s.error ? ' • '+s.error : ''}` : `Fallback demo${s.error ? ' • '+s.error : ''}`);
   document.querySelector('.optional').style.display = CFG.showApiPanel ? '' : 'none';
 }
 
 async function loop(){ updateStats(await readStats()); }
-setInterval(updateClocks, 1000); setInterval(loop, CFG.updateMs); updateClocks(); loop();
+setInterval(updateClocks, 1000);
+setInterval(loop, CFG.updateMs);
+setInterval(refreshWeather, 60000);
+updateClocks();
+loop();
+refreshWeather();
 
 window.wallpaperPropertyListener = {
   applyUserProperties(properties){
     const map = {
-      apiurl:'apiUrl', updatems:'updateMs', localtimezone:'localTimeZone', locallabel:'localLabel', worldclock1zone:'worldClock1Zone', worldclock1label:'worldClock1Label', worldclock2zone:'worldClock2Zone', worldclock2label:'worldClock2Label', demomode:'demoMode', showapipanel:'showApiPanel', panelopacity:'panelOpacity', uiscale:'uiScale', clockscale:'clockScale'
+      apiurl:'apiUrl', updatems:'updateMs', localtimezone:'localTimeZone', locallabel:'localLabel', worldclock1zone:'worldClock1Zone', worldclock1label:'worldClock1Label', worldclock2zone:'worldClock2Zone', worldclock2label:'worldClock2Label', demomode:'demoMode', showapipanel:'showApiPanel', panelopacity:'panelOpacity', uiscale:'uiScale', clockscale:'clockScale', weatherlocationname:'weatherLocationName', weatherlatitude:'weatherLatitude', weatherlongitude:'weatherLongitude', weatherupdateminutes:'weatherUpdateMinutes'
     };
     for(const [k,field] of Object.entries(map)) if(properties[k]) CFG[field] = properties[k].value;
     if(properties.custombackground?.value) $('bg').style.backgroundImage = `url('file:///${properties.custombackground.value}')`;
     setRootVar('--opacity', CFG.panelOpacity); setRootVar('--scale', CFG.uiScale); setRootVar('--clock-size', CFG.clockScale);
     $('api-url-label').textContent = CFG.apiUrl;
+    weatherState.lastAt = 0;
+    refreshWeather();
   }
 };

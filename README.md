@@ -38,3 +38,8 @@ Rode `sensor-bridge-powershell.ps1`. Ela lê CPU/RAM nativamente e GPU/VRAM/temp
 - Temperaturas de CPU e placa-mãe no Windows dependem muito do hardware, driver e permissões.
 - O wallpaper continua funcionando em modo demo quando a API local não estiver ativa.
 - O fundo padrão está em `assets/hamburg-rain-hud-bg.png` e também pode ser trocado nas propriedades.
+
+
+## Weather bar in real time
+
+The bottom bar now fetches live weather data from the free Open-Meteo API. You can change the displayed location name, latitude, longitude and refresh interval from Wallpaper Engine properties.

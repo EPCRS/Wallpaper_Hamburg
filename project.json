@@ -13,7 +13,7 @@
         "order": 1,
         "text": "Demo mode / fallback",
         "type": "bool",
-        "value": true
+        "value": false
       },
       "apiurl": {
         "order": 2,
@@ -35,6 +35,33 @@
         "text": "Show API status panel",
         "type": "bool",
         "value": true
+      },
+      "weatherlocationname": {
+        "order": 5,
+        "text": "Weather location name",
+        "type": "textinput",
+        "value": "HAMBURG"
+      },
+      "weatherlatitude": {
+        "order": 6,
+        "text": "Weather latitude",
+        "type": "textinput",
+        "value": "53.5511"
+      },
+      "weatherlongitude": {
+        "order": 7,
+        "text": "Weather longitude",
+        "type": "textinput",
+        "value": "9.9937"
+      },
+      "weatherupdateminutes": {
+        "order": 8,
+        "text": "Weather update interval minutes",
+        "type": "slider",
+        "value": 10,
+        "min": 1,
+        "max": 60,
+        "fraction": false
       },
       "localtimezone": {
         "order": 10,

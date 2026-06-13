@@ -51,12 +51,12 @@
     </section>
 
     <section class="panel bottom weatherish">
-      <div class="rain-icon">☁︎<i>///</i></div>
-      <div><span>LIGHT RAIN</span><strong>14°C</strong><small>↟ 15°C &nbsp; ↡ 11°C</small></div>
-      <div class="city"><strong id="city-title">HAMBURG</strong><small>53.5511° N, 9.9937° E</small></div>
-      <div class="mini"><span>♢ 93%</span><small>HUMIDITY</small></div>
-      <div class="mini"><span>≋ 18 km/h</span><small>WIND</small></div>
-      <div class="mini"><span>◌ 1006 hPa</span><small>PRESSURE</small></div>
+      <div class="rain-icon" id="weather-icon">☁︎<i id="weather-slashes">///</i></div>
+      <div><span id="weather-condition">LOADING WEATHER</span><strong id="weather-temp">--°C</strong><small id="weather-range">↟ --°C &nbsp; ↡ --°C</small></div>
+      <div class="city"><strong id="city-title">HAMBURG</strong><small id="city-coords">53.5511° N, 9.9937° E</small></div>
+      <div class="mini"><span id="weather-humidity">♢ --%</span><small>HUMIDITY</small></div>
+      <div class="mini"><span id="weather-wind">≋ -- km/h</span><small>WIND</small></div>
+      <div class="mini"><span id="weather-pressure">◌ -- hPa</span><small>PRESSURE</small></div>
     </section>
   </main>
   <script src="script.js"></script>
