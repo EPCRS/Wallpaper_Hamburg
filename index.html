@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Hamburg Rain System HUD</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="bg"></div>
+  <div id="noise"></div>
+  <main class="hud" aria-label="System monitor dashboard">
+    <section class="left stack">
+      <article class="panel metric big" data-widget="cpu">
+        <header><h2>CPU</h2><span id="cpu-name">PROCESSOR</span><b>•••</b></header>
+        <div class="metric-grid"><div><strong id="cpu-usage">--%</strong><small>USAGE</small></div><canvas id="cpu-chart"></canvas><em>60 SECONDS</em></div>
+      </article>
+      <article class="panel metric big" data-widget="gpu">
+        <header><h2>GPU</h2><span id="gpu-name">GRAPHICS</span><b>•••</b></header>
+        <div class="metric-grid"><div><strong id="gpu-usage">--%</strong><small>USAGE</small></div><canvas id="gpu-chart"></canvas><em>60 SECONDS</em></div>
+      </article>
+      <article class="panel metric memory">
+        <header><h2>RAM</h2><span id="ram-kind">SYSTEM MEMORY</span><strong id="ram-values">-- / -- GB</strong></header>
+        <div class="bar-row"><strong id="ram-pct">--%</strong><div class="segments" id="ram-bar"></div></div>
+      </article>
+      <article class="panel metric memory">
+        <header><h2>VRAM</h2><span id="vram-kind">VIDEO MEMORY</span><strong id="vram-values">-- / -- GB</strong></header>
+        <div class="bar-row"><strong id="vram-pct">--%</strong><div class="segments" id="vram-bar"></div></div>
+      </article>
+      <article class="panel metric network optional">
+        <header><h2>API</h2><span id="api-source">LOCAL SENSOR BRIDGE</span><b>•••</b></header>
+        <p class="status-line" id="api-status">Detectando...</p>
+        <p class="tiny">Endpoint: <span id="api-url-label">http://127.0.0.1:17377/stats</span></p>
+      </article>
+    </section>
+
+    <section class="right stack">
+      <article class="panel clock local-clock">
+        <header><span>⌖</span><strong id="local-label">HAMBURG, GERMANY</strong></header>
+        <time id="local-time">--:--:--</time>
+        <p id="local-date">---</p>
+      </article>
+      <article class="panel world"><canvas id="wc1-analog"></canvas><div><b>WORLD CLOCK 1</b><span id="wc1-label">NEW YORK, USA</span><time id="wc1-time">--:--:--</time><small id="wc1-date">---</small></div><em id="wc1-tz">UTC-4</em></article>
+      <article class="panel world"><canvas id="wc2-analog"></canvas><div><b>WORLD CLOCK 2</b><span id="wc2-label">TOKYO, JAPAN</span><time id="wc2-time">--:--:--</time><small id="wc2-date">---</small></div><em id="wc2-tz">UTC+9</em></article>
+      <article class="panel temps">
+        <header><h2>♨ TEMPERATURES</h2></header>
+        <div class="temp-row"><span>CPU</span><strong id="cpu-temp">--°C</strong><div class="segments small" id="cpu-temp-bar"></div></div>
+        <div class="temp-row"><span>MOTHERBOARD</span><strong id="mb-temp">--°C</strong><div class="segments small" id="mb-temp-bar"></div></div>
+        <div class="temp-row"><span>GPU</span><strong id="gpu-temp">--°C</strong><div class="segments small" id="gpu-temp-bar"></div></div>
+      </article>
+    </section>
+
+    <section class="panel bottom weatherish">
+      <div class="rain-icon">☁︎<i>///</i></div>
+      <div><span>LIGHT RAIN</span><strong>14°C</strong><small>↟ 15°C &nbsp; ↡ 11°C</small></div>
+      <div class="city"><strong id="city-title">HAMBURG</strong><small>53.5511° N, 9.9937° E</small></div>
+      <div class="mini"><span>♢ 93%</span><small>HUMIDITY</small></div>
+      <div class="mini"><span>≋ 18 km/h</span><small>WIND</small></div>
+      <div class="mini"><span>◌ 1006 hPa</span><small>PRESSURE</small></div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

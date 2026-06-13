@@ -1,0 +1,9 @@
+{
+  "name": "hamburg-system-hud-sensor-bridge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Local HTTP sensor bridge for the Hamburg Rain System HUD Wallpaper Engine web wallpaper.",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "systeminformation": "^5.23.8" }
+}
