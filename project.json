@@ -3,29 +3,121 @@
   "file": "index.html",
   "general": {
     "properties": {
-      "schemecolor": { "order": 0, "text": "Scheme color", "type": "color", "value": "0.80 0.82 0.84" }
+      "schemecolor": {
+        "order": 0,
+        "text": "Scheme color",
+        "type": "color",
+        "value": "0.80 0.82 0.84"
+      },
+      "demomode": {
+        "order": 1,
+        "text": "Demo mode / fallback",
+        "type": "bool",
+        "value": true
+      },
+      "apiurl": {
+        "order": 2,
+        "text": "Local sensor API URL",
+        "type": "textinput",
+        "value": "http://127.0.0.1:17377/stats"
+      },
+      "updatems": {
+        "order": 3,
+        "text": "Sensor update interval ms",
+        "type": "slider",
+        "value": 1000,
+        "min": 500,
+        "max": 5000,
+        "fraction": false
+      },
+      "showapipanel": {
+        "order": 4,
+        "text": "Show API status panel",
+        "type": "bool",
+        "value": true
+      },
+      "localtimezone": {
+        "order": 10,
+        "text": "Local timezone",
+        "type": "textinput",
+        "value": "Europe/Berlin"
+      },
+      "locallabel": {
+        "order": 11,
+        "text": "Local clock label",
+        "type": "textinput",
+        "value": "HAMBURG, GERMANY"
+      },
+      "worldclock1zone": {
+        "order": 12,
+        "text": "World clock 1 timezone",
+        "type": "textinput",
+        "value": "America/New_York"
+      },
+      "worldclock1label": {
+        "order": 13,
+        "text": "World clock 1 label",
+        "type": "textinput",
+        "value": "NEW YORK, USA"
+      },
+      "worldclock2zone": {
+        "order": 14,
+        "text": "World clock 2 timezone",
+        "type": "textinput",
+        "value": "Asia/Tokyo"
+      },
+      "worldclock2label": {
+        "order": 15,
+        "text": "World clock 2 label",
+        "type": "textinput",
+        "value": "TOKYO, JAPAN"
+      },
+      "panelopacity": {
+        "order": 20,
+        "text": "Panel opacity",
+        "type": "slider",
+        "value": 0.78,
+        "min": 0.35,
+        "max": 1.0,
+        "fraction": true,
+        "precision": 2
+      },
+      "uiscale": {
+        "order": 21,
+        "text": "UI scale",
+        "type": "slider",
+        "value": 1.0,
+        "min": 0.85,
+        "max": 1.15,
+        "fraction": true,
+        "precision": 2
+      },
+      "clockscale": {
+        "order": 22,
+        "text": "Main clock size",
+        "type": "slider",
+        "value": 1.0,
+        "min": 0.8,
+        "max": 1.2,
+        "fraction": true,
+        "precision": 2
+      },
+      "custombackground": {
+        "order": 30,
+        "text": "Custom background image",
+        "type": "file",
+        "filetype": "image"
+      }
     }
   },
   "preview": "assets/hamburg-rain-hud-bg.png",
-  "tags": ["Technology", "Cyberpunk", "Relaxing"],
+  "tags": [
+    "Technology",
+    "Cyberpunk",
+    "Relaxing"
+  ],
   "title": "Hamburg Rain System HUD",
   "type": "web",
   "visibility": "private",
-  "workshopid": "",
-  "properties": {
-    "demomode": { "order": 1, "text": "Demo mode / fallback", "type": "bool", "value": true },
-    "apiurl": { "order": 2, "text": "Local sensor API URL", "type": "textinput", "value": "http://127.0.0.1:17377/stats" },
-    "updatems": { "order": 3, "text": "Sensor update interval ms", "type": "slider", "value": 1000, "min": 500, "max": 5000, "fraction": false },
-    "showapipanel": { "order": 4, "text": "Show API status panel", "type": "bool", "value": true },
-    "localtimezone": { "order": 10, "text": "Local timezone", "type": "textinput", "value": "Europe/Berlin" },
-    "locallabel": { "order": 11, "text": "Local clock label", "type": "textinput", "value": "HAMBURG, GERMANY" },
-    "worldclock1zone": { "order": 12, "text": "World clock 1 timezone", "type": "textinput", "value": "America/New_York" },
-    "worldclock1label": { "order": 13, "text": "World clock 1 label", "type": "textinput", "value": "NEW YORK, USA" },
-    "worldclock2zone": { "order": 14, "text": "World clock 2 timezone", "type": "textinput", "value": "Asia/Tokyo" },
-    "worldclock2label": { "order": 15, "text": "World clock 2 label", "type": "textinput", "value": "TOKYO, JAPAN" },
-    "panelopacity": { "order": 20, "text": "Panel opacity", "type": "slider", "value": 0.78, "min": 0.35, "max": 1.0, "fraction": true, "precision": 2 },
-    "uiscale": { "order": 21, "text": "UI scale", "type": "slider", "value": 1.0, "min": 0.85, "max": 1.15, "fraction": true, "precision": 2 },
-    "clockscale": { "order": 22, "text": "Main clock size", "type": "slider", "value": 1.0, "min": 0.8, "max": 1.2, "fraction": true, "precision": 2 },
-    "custombackground": { "order": 30, "text": "Custom background image", "type": "file", "filetype": "image" }
-  }
+  "workshopid": ""
 }
